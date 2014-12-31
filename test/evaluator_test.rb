@@ -8,10 +8,14 @@ class EvaluatorTest < Minitest::Test
 		assert Evaluator
 	end
 
-	def test_it_starts_a_game
-		printer = Printer.new
-		evaluator = Evaluator.new(printer)
+	attr_reader :evaluator
 
+	def setup
+		printer = Printer.new
+		@evaluator = Evaluator.new(printer)
+	end
+
+	def test_it_starts_a_game
 		assert evaluator.number.nil?, "A game should start with no secret number"
 
 		evaluator.execute("p") # Start a game from the menu
@@ -20,8 +24,6 @@ class EvaluatorTest < Minitest::Test
 	end
 
 	def test_guess_is_too_high
-		printer = Printer.new
-		evaluator = Evaluator.new(printer)
 		evaluator.execute("p")
 
 		evaluator.number = 5
@@ -32,8 +34,6 @@ class EvaluatorTest < Minitest::Test
 	end
 
 	def test_guess_is_too_low
-		printer = Printer.new
-		evaluator = Evaluator.new(printer)
 		evaluator.execute("p")
 
 		evaluator.number = 5
@@ -44,8 +44,6 @@ class EvaluatorTest < Minitest::Test
 	end
 
 	def test_guess_is_correct
-		printer = Printer.new
-		evaluator = Evaluator.new(printer)
 		evaluator.execute("p")
 
 		evaluator.number = 5
@@ -59,17 +57,12 @@ class EvaluatorTest < Minitest::Test
 	end
 
 	def test_quit_from_menu
-		printer = Printer.new
-		evaluator = Evaluator.new(printer)
-
 		message, signal = evaluator.execute("q")
 		assert message.include?("Thanks"), "A quit message should say something about 'Thanks'"
 		assert_equal :stop, signal
 	end
 
 	def test_quit_round_in_game
-		printer = Printer.new
-		evaluator = Evaluator.new(printer)
 		evaluator.execute("p")
 
 		message, signal = evaluator.execute("q")
