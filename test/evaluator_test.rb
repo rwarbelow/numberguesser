@@ -8,32 +8,65 @@ class EvaluatorTest < Minitest::Test
 		assert Evaluator
 	end
 
-	def test_it_generates_a_number
-		evaluator = Evaluator.new
-		number = evaluator.generate_number
-		assert number.is_a?(Integer)
-		assert (1..20).include?(number)
+	attr_reader :evaluator
+
+	def setup
+		printer = Printer.new
+		@evaluator = Evaluator.new(printer)
+	end
+
+	def test_it_starts_a_game
+		assert evaluator.number.nil?, "A game should start with no secret number"
+
+		evaluator.execute("p") # Start a game from the menu
+
+		assert evaluator.number, "A started game should have a number"
 	end
 
 	def test_guess_is_too_high
-		evaluator = Evaluator.new
-		evaluator.stub :number, 5 do
-			assert evaluator.too_high?(8)
-    end
-		
+		evaluator.execute("p")
+
+		evaluator.number = 5
+
+		message, signal = evaluator.execute("7")
+		assert message.include?("high"), "A too high guess should say something about 'high'"
+		assert_equal :continue, signal
 	end
 
 	def test_guess_is_too_low
-		evaluator = Evaluator.new
-		evaluator.stub :number, 5 do
-			assert evaluator.too_low?(3)
-    end
+		evaluator.execute("p")
+
+		evaluator.number = 5
+
+		message, signal = evaluator.execute("3")
+		assert message.include?("low"), "A too low guess should say something about 'low'"
+		assert_equal :continue, signal
 	end
 
 	def test_guess_is_correct
-		evaluator = Evaluator.new
-		evaluator.stub :number, 5 do
-			assert evaluator.correct_guess?(5)
-    end
+		evaluator.execute("p")
+
+		evaluator.number = 5
+
+		evaluator.execute("6")
+		evaluator.execute("4")
+
+		message, signal = evaluator.execute("5")
+		assert message.include?("won"), "A winning guess should say something about 'won'"
+		assert_equal :continue, signal
+	end
+
+	def test_quit_from_menu
+		message, signal = evaluator.execute("q")
+		assert message.include?("Thanks"), "A quit message should say something about 'Thanks'"
+		assert_equal :stop, signal
+	end
+
+	def test_quit_round_in_game
+		evaluator.execute("p")
+
+		message, signal = evaluator.execute("q")
+		assert message.include?("over"), "A round-quit message should say something about 'over'"
+		assert_equal :continue, signal
 	end
 end
