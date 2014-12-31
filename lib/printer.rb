@@ -4,7 +4,7 @@ class Printer
 	end
 
 	def winning_message
-		"Congratulations! You won."
+		"Congratulations! You won.\n#{instructions}"
 	end
 
 	def end_of_round
@@ -29,6 +29,9 @@ class Printer
 
 	def welcome
 		"Welcome to NumberGuesser!\n#{instructions}"
-
 	end
+
+  def goodbye
+    "Thanks for playing!"
+  end
 end
