@@ -57,4 +57,23 @@ class EvaluatorTest < Minitest::Test
 		assert message.include?("won"), "A winning guess should say something about 'won'"
 		assert_equal :continue, signal
 	end
+
+	def test_quit_from_menu
+		printer = Printer.new
+		evaluator = Evaluator.new(printer)
+
+		message, signal = evaluator.execute("q")
+		assert message.include?("Thanks"), "A quit message should say something about 'Thanks'"
+		assert_equal :stop, signal
+	end
+
+	def test_quit_round_in_game
+		printer = Printer.new
+		evaluator = Evaluator.new(printer)
+		evaluator.execute("p")
+
+		message, signal = evaluator.execute("q")
+		assert message.include?("over"), "A round-quit message should say something about 'over'"
+		assert_equal :continue, signal
+	end
 end
