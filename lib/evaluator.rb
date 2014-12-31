@@ -1,5 +1,6 @@
 class Evaluator
-	attr_reader :number, :printer, :game_in_progress
+	attr_reader :printer, :game_in_progress
+	attr_accessor :number
 
 	def initialize(input_printer)
 		@printer = input_printer

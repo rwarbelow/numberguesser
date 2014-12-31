@@ -20,12 +20,15 @@ class EvaluatorTest < Minitest::Test
 	end
 
 	def test_guess_is_too_high
-		skip
-		evaluator = Evaluator.new
-		evaluator.stub :number, 5 do
-			assert evaluator.too_high?(8)
-    end
+		printer = Printer.new
+		evaluator = Evaluator.new(printer)
+		evaluator.execute("p")
 
+		evaluator.number = 5
+
+		message, signal = evaluator.execute("7")
+		assert message.include?("high"), "A too high guess should say something about 'high'"
+		assert_equal :continue, signal
 	end
 
 	def test_guess_is_too_low
